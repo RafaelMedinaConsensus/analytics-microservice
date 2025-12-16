@@ -2,7 +2,8 @@ from langchain_core.tools import tool
 from services.schemas import GroupingInput
 from engines.transform.grouping import group_and_aggregate
 from services.schemas import FilterInput, TopNInput
-from engines.transform.filtering import apply_filter, get_top_n_records
+from engines.transform.filtering import apply_filter
+from engines.transform.top_n_records import get_top_n_records
 
 @tool(args_schema=GroupingInput)
 def aggregate_data(data: list[dict], group_by: str, target_column: str, operation: str = "sum") -> dict:

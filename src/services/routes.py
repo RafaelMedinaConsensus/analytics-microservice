@@ -26,6 +26,30 @@ router = APIRouter()
 TOOL_REGISTRY = load_tool_registry()
 
 # ============================================================
+# 0. ENDPOINT DE DESCUBRIMIENTO / INTROSPECCIÓN
+# ============================================================
+@router.get("/discovery/tools")
+def discovery_endpoint():
+    """
+    Endpoint de Introspección.
+    Devuelve la lista de tools registradas y su esquema JSON (argumentos requeridos).
+    El Router usa esto para aprender qué puede hacer este microservicio.
+    """
+    tools_info = []
+    
+    for name, tool_instance in TOOL_REGISTRY.items():
+        # Extraemos el esquema de argumentos (Pydantic -> JSON Schema)
+        schema = tool_instance.args_schema.model_json_schema() if tool_instance.args_schema else {}
+        
+        tools_info.append({
+            "name": name,
+            "description": tool_instance.description,
+            "schema": schema # Esto le dice al Router qué argumentos pedir (x_col, data, etc)
+        })
+        
+    return {"status": "success", "tools": tools_info}
+
+# ============================================================
 # 1. ENDPOINT GENÉRICO (MCP / Gateway)
 # ============================================================
 @router.post("/execute")

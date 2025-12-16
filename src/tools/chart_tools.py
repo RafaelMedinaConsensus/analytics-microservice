@@ -24,9 +24,14 @@ def create_line_chart(data: list[dict], x_col: str, y_col: str, title: str = "L�
         return {"status": "error", "error": str(e)}
 
 @tool(args_schema=ChartInput)
-def create_pie_chart(data: list[dict], x_col: str, y_col: str, title: str = "Pastel") -> dict:
-    """Genera gráfico de pastel. x_col es categoría, y_col es valor."""
+def create_pie_chart(data: list[dict], x_col: str, y_col: str, title: str = "Pastel", color: str = None) -> dict:
+    """
+    Genera gráfico de pastel. 
+    NOTA: Se agrega 'color' para cumplir con el esquema ChartInput, aunque se ignora 
+    porque los Pie Charts usan paletas multicolor automáticas.
+    """
     try:
+        # No pasamos 'color' al motor porque generate_pie_chart no lo usa
         b64 = generate_pie_chart(data, x_col, y_col, title)
         return {"status": "success", "image_base64": b64}
     except Exception as e:
