@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
-
+import traceback
 # Schemas
 from services.schemas import (
     StatsInput, GroupingInput, ChartInput, StandardResponse, ExecutionRequest, 
@@ -54,17 +54,39 @@ def discovery_endpoint():
 # ============================================================
 @router.post("/execute")
 async def execute_tool_endpoint(req: ExecutionRequest):
-    """Ejecuta cualquier tool por su nombre registrado."""
+    """Ejecuta cualquier tool por su nombre, manejando la inyección de datos del Orquestador."""
+    payload = req.payload
+    # Mapeo de sinónimos para el LLM
+    synonyms = {
+        "x_axis": "x_col", "x_label": "x_col", "y_axis": "y_col", "y_label": "y_col",
+        "group_by_column": "group_by", "column_to_operate": "target_column"
+    }
+    for old, new in synonyms.items():
+        if old in payload and new not in payload:
+            payload[new] = payload.pop(old)
+
     if req.tool_name not in TOOL_REGISTRY:
         raise HTTPException(status_code=404, detail=f"Tool '{req.tool_name}' no encontrada.")
+
     try:
         target_tool = TOOL_REGISTRY[req.tool_name]
-        # LangChain mapea el payload a los argumentos
-        result = await target_tool.ainvoke(req.payload)
-        return {"status": "success", "data": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        
+        # LOG DE SEGURIDAD: Verificar si la inyección de datos fue exitosa
+        data_sample = req.payload.get("data", [])
+        if isinstance(data_sample, list):
+            print(f"   ✅ Inyección exitosa: Recibidos {len(data_sample)} registros.")
+        else:
+            print(f"   ⚠️ Alerta: El campo 'data' no es una lista. Tipo: {type(data_sample)}")
 
+        # Ejecución a través de LangChain (invoca create_bar_chart, etc)
+        result = await target_tool.ainvoke(req.payload)
+        
+        return {"status": "success", "data": result}
+
+    except Exception as e:
+        print(f"   💀 EXCEPCIÓN EN EXECUTE: {str(e)}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 # ============================================================
 # 2. ENDPOINTS ESTADÍSTICOS (Descriptive)
 # ============================================================

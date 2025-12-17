@@ -20,10 +20,14 @@ class GroupingInput(BaseModel):
 # --- GRÁFICOS (Charts)
 class ChartInput(BaseModel):
     data: List[Dict[str, Any]] = Field(..., description="Lista de datos para graficar.")
-    x_col: str = Field(..., description="Nombre de la columna Eje X (Categoría/Tiempo).")
+    x_col: str = Field(..., description="Nombre de la columna Eje X (Categoria/Tiempo).")
     y_col: str = Field(..., description="Nombre de la columna Eje Y (Valor).")
-    title: Optional[str] = Field("Gráfico Generado", description="Título del gráfico.")
+    title: Optional[str] = Field("Grafico Generado", description="Titulo del grafico.")
     color: Optional[str] = Field(None, description="Color (ej: 'red', 'skyblue', '#FF5733').")
+    output_format: Optional[str] = Field(
+        "image", 
+        description="Formato de salida: 'image' (base64 PNG) o 'json' (datos para frontend React/Recharts)."
+    )
 
 # --- FILTRADO ---
 class FilterInput(BaseModel):
