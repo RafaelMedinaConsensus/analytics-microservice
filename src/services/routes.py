@@ -16,7 +16,7 @@ from engines.transform.grouping import group_and_aggregate
 from engines.visualizers.charts.bar import generate_bar_chart
 from engines.visualizers.charts.line import generate_line_chart
 from engines.visualizers.charts.pie import generate_pie_chart
-from engines.predictive.regression import calculate_linear_forecast
+from engines.predictive.regression import analytics_linear_forecast
 from engines.transform.filtering import apply_filter
 from engines.transform.top_n_records import get_top_n_records
 
@@ -150,7 +150,7 @@ def endpoint_top_n(payload: TopNInput):
 @router.post("/predict/linear", response_model=StandardResponse)
 def endpoint_forecast(payload: ForecastInput):
     try:
-        result = calculate_linear_forecast(payload.data, payload.x_col, payload.y_col, payload.periods)
+        result = analytics_linear_forecast(payload.data, payload.x_col, payload.y_col, payload.periods)
         return {"status": "success", "data": result}
     except Exception as e:
         return {"status": "error", "error": str(e)}

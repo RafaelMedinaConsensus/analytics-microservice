@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Any
 
-def calculate_linear_forecast(
+def analytics_linear_forecast(
     data: List[Dict[str, Any]], 
     x_col: str, 
     y_col: str, 

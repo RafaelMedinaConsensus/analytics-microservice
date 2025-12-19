@@ -5,10 +5,12 @@ from src.engines.descriptive.central import get_smart_mean, get_smart_median, ge
 
 # --- TOOL 1: MEDIA ---
 @tool(args_schema=StatsInput)
-def calculate_smart_mean(data: list[dict], column: str) -> dict:
+def analytics_stat_mean(data: list[dict], column: str) -> dict:
     """
-    Calcula el promedio aritmético y la volatilidad (desviación estándar) de una columna.
-    Útil para entender la tendencia central y la estabilidad de los datos.
+    [ANALYTICS] Calcula PROMEDIO aritmetico y volatilidad (desviacion estandar).
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - column: Nombre de la columna numerica a analizar
+    Retorna: mean, std_dev, count
     """
     try:
         # Llamamos al motor puro
@@ -18,10 +20,12 @@ def calculate_smart_mean(data: list[dict], column: str) -> dict:
 
 # --- TOOL 2: MEDIANA ---
 @tool(args_schema=StatsInput)
-def calculate_smart_median(data: list[dict], column: str) -> dict:
+def analytics_stat_median(data: list[dict], column: str) -> dict:
     """
-    Calcula la mediana y el rango intercuartil (IQR).
-    Útil para ignorar valores atípicos (outliers) en precios o salarios.
+    [ANALYTICS] Calcula MEDIANA y rango intercuartil (IQR).
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - column: Nombre de la columna numerica a analizar
+    Retorna: median, q1, q3, iqr (ignora outliers)
     """
     try:
         return get_smart_median(data, column)
@@ -30,10 +34,12 @@ def calculate_smart_median(data: list[dict], column: str) -> dict:
 
 # --- TOOL 3: MODA ---
 @tool(args_schema=StatsInput)
-def calculate_smart_mode(data: list[dict], column: str) -> dict:
+def analytics_stat_mode(data: list[dict], column: str) -> dict:
     """
-    Identifica el valor más frecuente (Moda), su porcentaje de dominancia y si hay empates.
-    Útil para encontrar productos más vendidos o categorías más comunes.
+    [ANALYTICS] Identifica MODA (valor mas frecuente) y dominancia.
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - column: Nombre de la columna a analizar
+    Retorna: mode, frequency, percentage (para productos mas vendidos, categorias comunes)
     """
     try:
         return get_smart_mode(data, column)

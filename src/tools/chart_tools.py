@@ -113,7 +113,7 @@ def _format_pie_for_recharts(
 # ==========================================
 
 @tool(args_schema=ChartInput)
-def create_bar_chart(
+def analytics_chart_bar(
     data: list[dict], 
     x_col: str, 
     y_col: str, 
@@ -122,8 +122,11 @@ def create_bar_chart(
     output_format: str = "image"
 ) -> dict:
     """
-    Genera grafico de barras vertical.
-    output_format: 'image' (PNG base64) o 'json' (datos para React/Recharts)
+    [ANALYTICS] Genera grafico de BARRAS vertical.
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - x_col: Nombre de columna para eje X
+    - y_col: Nombre de columna para eje Y
+    - output_format: 'image' (PNG base64) o 'json' (para React/Recharts)
     """
     try:
         if output_format == "json":
@@ -136,7 +139,7 @@ def create_bar_chart(
 
 
 @tool(args_schema=ChartInput)
-def create_line_chart(
+def analytics_chart_line(
     data: list[dict], 
     x_col: str, 
     y_col: str, 
@@ -145,8 +148,11 @@ def create_line_chart(
     output_format: str = "image"
 ) -> dict:
     """
-    Genera grafico de linea.
-    output_format: 'image' (PNG base64) o 'json' (datos para React/Recharts)
+    [ANALYTICS] Genera grafico de LINEA temporal.
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - x_col: Nombre de columna para eje X (usualmente fecha)
+    - y_col: Nombre de columna para eje Y (valores)
+    - output_format: 'image' (PNG base64) o 'json' (para React/Recharts)
     """
     try:
         if output_format == "json":
@@ -159,7 +165,7 @@ def create_line_chart(
 
 
 @tool(args_schema=ChartInput)
-def create_pie_chart(
+def analytics_chart_pie(
     data: list[dict], 
     x_col: str, 
     y_col: str, 
@@ -168,9 +174,11 @@ def create_pie_chart(
     output_format: str = "image"
 ) -> dict:
     """
-    Genera grafico de pastel/pie.
-    output_format: 'image' (PNG base64) o 'json' (datos para React/Recharts)
-    NOTA: 'color' se ignora en pie charts (usa paleta automatica).
+    [ANALYTICS] Genera grafico de PASTEL/PIE para distribuciones.
+    - data: Lista de diccionarios con los datos (puede ser REF_ID)
+    - x_col: Nombre de columna para categorias
+    - y_col: Nombre de columna para valores
+    - output_format: 'image' (PNG base64) o 'json' (para React/Recharts)
     """
     try:
         if output_format == "json":
