@@ -80,6 +80,8 @@ async def execute_tool_endpoint(req: ExecutionRequest):
 
         # Ejecución a través de LangChain (invoca create_bar_chart, etc)
         result = await target_tool.ainvoke(req.payload)
+
+        print(result)
         
         return {"status": "success", "data": result}
 

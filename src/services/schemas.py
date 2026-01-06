@@ -50,6 +50,16 @@ class ForecastInput(BaseModel):
     y_col: str = Field(..., description="Columna a predecir (Eje Y).")
     periods: int = Field(3, description="Cuántos periodos futuros proyectar.")
 
+# --- RECONCILIACIÓN (Cross-reference) ---
+class ReconcileInput(BaseModel):
+    data_a: List[Dict[str, Any]] = Field(..., description="Primer conjunto de datos (ej: Facturas SAP).")
+    data_b: List[Dict[str, Any]] = Field(..., description="Segundo conjunto de datos (ej: Documentos DIAN).")
+    key_column_a: Optional[str] = Field(None, description="Nombre del campo clave en el conjunto A (ej: 'U_CUFE'). Si no se especifica, usa 'key_column'.")
+    key_column_b: Optional[str] = Field(None, description="Nombre del campo clave en el conjunto B (ej: 'cufe'). Si no se especifica, usa 'key_column'.")
+    key_column: str = Field("CUFE", description="Nombre del campo clave común si ambos conjuntos usan el mismo nombre.")
+    mode: str = Field("missing_in_a", description="Modo de operación: 'missing_in_a' (en B pero no en A), 'missing_in_b' (en A pero no en B), 'intersection' (en ambos).")
+
+
 # --- EJECUCIÓN GENÉRICA (Para /execute) ---
 class ExecutionRequest(BaseModel):
     tool_name: str = Field(..., description="Nombre exacto de la tool a ejecutar.")
